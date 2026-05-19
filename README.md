@@ -1,4 +1,4 @@
-# meister-export
+# mapsnatch
 
 > MindMeister lets you export maps one at a time unless you pay for a Business plan.
 > This tool gives you bulk export using their own public API — available on all plan types including free.
@@ -6,11 +6,11 @@
 ## Quickstart
 
 ```bash
-git clone https://github.com/gavinc/meister-export
-cd meister-export
+git clone https://github.com/gavinc/mapsnatch
+cd mapsnatch
 pip install -e .
 echo "MINDMEISTER_API_TOKEN=your_token_here" > .env
-meister-export
+mapsnatch
 ```
 
 Get your API token at: https://www.mindmeister.com/api/settings
@@ -30,7 +30,7 @@ Get your API token at: https://www.mindmeister.com/api/settings
 ## Usage
 
 ```
-meister-export [OPTIONS]
+mapsnatch [OPTIONS]
 
 Options:
   --format, -f    Export format: mm, pdf, mind, xmind, rtf  (default: mm)
@@ -44,16 +44,16 @@ Options:
 
 ```bash
 # Export all maps as FreeMind format (default)
-meister-export
+mapsnatch
 
 # Export as PDF into a custom directory
-meister-export --format pdf --output ~/mindmaps
+mapsnatch --format pdf --output ~/mindmaps
 
 # List what maps would be exported without downloading
-meister-export --dry-run
+mapsnatch --dry-run
 
 # Use a token directly without .env
-meister-export --token YOUR_TOKEN_HERE
+mapsnatch --token YOUR_TOKEN_HERE
 ```
 
 ## How it works
@@ -94,7 +94,7 @@ echo "MINDMEISTER_API_TOKEN=your_token_here" > .env
 export MINDMEISTER_API_TOKEN=your_token_here
 
 # Option C: command line flag
-meister-export --token your_token_here
+mapsnatch --token your_token_here
 ```
 
 ## Contributing
