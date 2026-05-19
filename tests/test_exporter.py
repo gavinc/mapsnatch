@@ -2,13 +2,15 @@ import zipfile, io, os
 import pytest
 from unittest.mock import MagicMock, patch
 from meister_export.client import MapInfo
-from meister_export.exporter import Exporter, ZIPPED_FORMATS
+from meister_export.exporter import Exporter, ZIPPED_FORMATS, detect_content_type, validate_directory
 
 
-def make_zip(inner_name: str, inner_content: bytes) -> bytes:
+def make_zip(*entries: tuple) -> bytes:
+    """entries: list of (filename, content_bytes)"""
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w") as zf:
-        zf.writestr(inner_name, inner_content)
+        for name, content in entries:
+            zf.writestr(name, content)
     return buf.getvalue()
 
 
@@ -32,7 +34,7 @@ def test_export_pdf_writes_file(tmp_path):
 
 def test_export_mm_unzips(tmp_path):
     client = MagicMock()
-    zip_data = make_zip("inner.mm", b"<map><node/></map>")
+    zip_data = make_zip(("inner.mm", b"<map><node/></map>"))
     client.export_map.return_value = zip_data
     exp = Exporter(client, output_dir=str(tmp_path))
     m = MapInfo(id="2", title="Mind Map", modified="", owner="")
@@ -40,6 +42,68 @@ def test_export_mm_unzips(tmp_path):
     out = tmp_path / "Mind_Map.mm"
     assert out.exists()
     assert b"<map>" in out.read_bytes()
+
+
+def test_export_mm_with_embedded_images_extracts_mm_not_image(tmp_path):
+    """Maps with embedded images: zip contains JPEGs first, then the .mm file.
+    Exporter must find the .mm file, not blindly take the first entry."""
+    client = MagicMock()
+    jpeg_bytes = b'\xff\xd8\xff' + b'\x00' * 100   # fake JPEG magic
+    mm_xml = b"<map><node TEXT='Projects'/></map>"
+    zip_data = make_zip(
+        ("1000006705.jpg", jpeg_bytes),
+        ("1000006706.jpg", jpeg_bytes),
+        ("Projects___Todos.mm", mm_xml),
+    )
+    client.export_map.return_value = zip_data
+    exp = Exporter(client, output_dir=str(tmp_path))
+    m = MapInfo(id="2897821606", title="Projects / Todos", modified="", owner="")
+    exp.export_one(m, "mm")
+    out = tmp_path / "Projects___Todos.mm"
+    assert out.exists(), "Output file should exist"
+    content = out.read_bytes()
+    assert content == mm_xml, "Should have saved the .mm XML, not JPEG bytes"
+
+
+# --- detect_content_type tests ---
+
+def test_detect_content_type_xml():
+    assert detect_content_type(b"<map><node/></map>") == "xml"
+    assert detect_content_type(b"<?xml version") == "xml"
+
+def test_detect_content_type_png():
+    assert detect_content_type(b"\x89PNG\r\n\x1a\n") == "png"
+
+def test_detect_content_type_jpeg():
+    assert detect_content_type(b"\xff\xd8\xff") == "jpeg"
+
+def test_detect_content_type_pdf():
+    assert detect_content_type(b"%PDF-1.4") == "pdf"
+
+def test_detect_content_type_zip():
+    assert detect_content_type(b"PK\x03\x04") == "zip"
+
+def test_detect_content_type_rtf():
+    assert detect_content_type(b"{\\rtf1") == "rtf"
+
+
+# --- validate_directory tests ---
+
+def test_validate_directory_all_ok(tmp_path):
+    (tmp_path / "Map_One.mm").write_bytes(b"<map><node/></map>")
+    (tmp_path / "Map_Two.mm").write_bytes(b"<?xml version='1.0'?><map/>")
+    results = validate_directory(tmp_path, "mm")
+    assert results["ok"] == 2
+    assert results["bad"] == []
+
+def test_validate_directory_catches_wrong_type(tmp_path):
+    (tmp_path / "Good.mm").write_bytes(b"<map><node/></map>")
+    (tmp_path / "Bad.mm").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
+    results = validate_directory(tmp_path, "mm")
+    assert results["ok"] == 1
+    assert len(results["bad"]) == 1
+    assert results["bad"][0]["file"] == "Bad.mm"
+    assert results["bad"][0]["detected"] == "png"
 
 
 def test_export_sanitises_filename(tmp_path):
