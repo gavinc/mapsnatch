@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meister-export"
+version = "0.1.0"
+description = "Bulk-export all your MindMeister maps without a Business plan"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "tqdm>=4.66",
+]
+
+[project.scripts]
+meister-export = "meister_export.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,6 @@
+requests>=2.31
+python-dotenv>=1.0
+tqdm>=4.66
+pytest>=7.4
+pytest-mock>=3.11
+responses>=0.24

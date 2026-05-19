@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.env
+exports/
+*.pdf
+*.mm
+*.mind
+*.xmind
+*.rtf
+.venv/
+venv/
