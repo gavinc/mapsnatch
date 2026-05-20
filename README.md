@@ -16,6 +16,10 @@
 | [Support](./SUPPORT.md) | [Docs](https://gavinc.github.io/mapsnatch/) |
 | [Code of Conduct](./CODE_OF_CONDUCT.md) | [Report a bug](https://github.com/gavinc/mapsnatch/issues/new?template=bug_report.yml) |
 
+If this CLI saves you time, tips are welcome (not required):
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D5G31ZW8MC)
+
 ## Quickstart
 
 ```bash
