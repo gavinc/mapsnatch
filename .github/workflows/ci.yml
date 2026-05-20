@@ -70,7 +70,18 @@ jobs:
           chmod +x gitleaks
 
       - name: Scan repository for secrets
-        run: ./gitleaks detect --source . --config .gitleaks.toml --verbose --redact --no-banner
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            LOG_OPTS="${BASE_SHA}..${HEAD_SHA}"
+          else
+            LOG_OPTS="origin/${REF_NAME}"
+          fi
+          ./gitleaks detect --source . --config .gitleaks.toml --log-opts="$LOG_OPTS" --verbose --redact --no-banner
 
   all-checks:
     name: ci
