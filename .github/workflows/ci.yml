@@ -38,3 +38,31 @@ jobs:
 
       - name: Pytest
         run: python -m pytest -v
+
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Audit production dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+          pip install -r requirements-prod.txt
+          pip-audit -r requirements-prod.txt
+
+  all-checks:
+    name: ci
+    needs: [lint-test, security-audit]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require lint, test, and security audit
+        run: |
+          test "${{ needs.lint-test.result }}" = "success"
+          test "${{ needs.security-audit.result }}" = "success"

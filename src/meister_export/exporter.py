@@ -9,12 +9,12 @@ ZIPPED_FORMATS = {"mm", "mind", "xmind", "mmind"}
 
 # Expected content type per format (after unzipping where applicable)
 _EXPECTED_TYPE: dict[str, tuple[str, ...]] = {
-    "mm":    ("xml",),
-    "mind":  ("xml",),
+    "mm": ("xml",),
+    "mind": ("xml",),
     "xmind": ("xml", "zip"),  # XMind files are themselves zip containers
     "mmind": ("xml", "zip"),
-    "pdf":   ("pdf",),
-    "rtf":   ("rtf",),
+    "pdf": ("pdf",),
+    "rtf": ("rtf",),
 }
 
 

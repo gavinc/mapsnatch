@@ -14,8 +14,9 @@ gh api repos/gavinc/mapsnatch -X PATCH \
   -f allow_merge_commit=false \
   -f allow_rebase_merge=false
 
-# Dependabot security updates
+# Dependabot alerts + automated security fix PRs
 gh api repos/gavinc/mapsnatch/vulnerability-alerts -X PUT
+gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 ```
 
 ## Click in GitHub UI
@@ -33,7 +34,7 @@ gh api repos/gavinc/mapsnatch/vulnerability-alerts -X PUT
 ```bash
 gh api repos/gavinc/mapsnatch/branches/main/protection -X PUT \
   -f required_status_checks[strict]=true \
-  -f required_status_checks[contexts][]=lint-test \
+  -f required_status_checks[contexts][]=ci \
   -f enforce_admins=true \
   -f required_pull_request_reviews[required_approving_review_count]=0 \
   -f restrictions=null
