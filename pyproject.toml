@@ -18,5 +18,8 @@ dependencies = [
 [project.scripts]
 mapsnatch = "meister_export.cli:main"
 
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-mock>=3", "responses>=0.25"]
+
 [tool.setuptools.packages.find]
 where = ["src"]

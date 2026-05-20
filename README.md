@@ -1,7 +1,17 @@
-# mapsnatch
+# MapSnatch
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](./LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
 > MindMeister lets you export maps one at a time unless you pay for a Business plan.
 > This tool gives you bulk export using their own public API — available on all plan types including free.
+
+**Hosted version (no CLI):** [mapsnatch.com](https://mapsnatch.com) — pay once, export in the browser.
+
+| | |
+|---|---|
+| [Contributing](./CONTRIBUTING.md) | [Security](./SECURITY.md) |
+| [Code of Conduct](./CODE_OF_CONDUCT.md) | [Report a bug](https://github.com/gavinc/mapsnatch/issues/new?template=bug_report.yml) |
 
 ## Quickstart
 
@@ -99,18 +109,8 @@ mapsnatch --token your_token_here
 
 ## Contributing
 
-Pull requests welcome. Please:
-
-- Add tests for new functionality (`tests/` directory, using `pytest` + `responses` for mocking)
-- Never commit real API tokens — mock all HTTP in tests
-- Follow conventional commit messages (`feat:`, `fix:`, `chore:`, `docs:`)
-
-```bash
-pip install -e .
-pip install pytest pytest-mock responses
-python -m pytest -v
-```
+See **[CONTRIBUTING.md](./CONTRIBUTING.md)**. Pull requests welcome — run `python -m pytest -v` before opening a PR.
 
 ## License
 
-MIT
+[AGPL-3.0-or-later](./LICENSE)

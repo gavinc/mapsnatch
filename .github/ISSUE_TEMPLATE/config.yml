@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report (private)
+    url: https://github.com/gavinc/mapsnatch/blob/main/SECURITY.md
+    about: Do not file public issues for vulnerabilities
+  - name: Hosted MapSnatch (web)
+    url: https://mapsnatch.com
+    about: Paid bulk export in the browser — separate from this CLI repo
+  - name: MindMeister API docs
+    url: https://www.mindmeister.com/api
+    about: Upstream API reference
