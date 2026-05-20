@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting. **Do not paste your MindMeister API token.**
+        Thanks for reporting. **Do not paste your MindMeister personal access token.**
         For security issues, use [SECURITY.md](https://github.com/gavinc/mapsnatch/blob/main/SECURITY.md) instead.
 
   - type: input
@@ -83,5 +83,5 @@ body:
       options:
         - label: I searched existing issues
           required: true
-        - label: I did not include my API token
+        - label: I did not include my personal access token
           required: true

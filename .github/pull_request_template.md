@@ -14,7 +14,7 @@
 
 - [ ] `python -m pytest -v` passes
 - [ ] New behavior has tests (or explanation why not)
-- [ ] No API tokens, `.env` secrets, or personal export files in the diff
+- [ ] No personal access tokens, `.env` secrets, or personal export files in the diff
 - [ ] README / docstrings updated if user-facing
 - [ ] Commit messages use Conventional Commits (`feat:`, `fix:`, …)
 

@@ -65,7 +65,7 @@ def test_export_map_uses_map_images_for_png():
 
 
 def test_client_requires_token():
-    with pytest.raises(ValueError, match="API token"):
+    with pytest.raises(ValueError, match="Personal access token"):
         MindMeisterClient("")
 
 
