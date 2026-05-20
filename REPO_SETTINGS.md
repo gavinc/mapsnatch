@@ -43,8 +43,8 @@ gh api repos/gavinc/mapsnatch/branches/main/protection -X PUT \
 
 Adjust `contexts` if the CI job name differs after the first workflow run.
 
-## Private repo + free GitHub plan
+## Visibility vs branch protection
 
-After the May 2026 incident, `mapsnatch` was set **private**. On a **free** account, GitHub **does not offer branch protection rules** on private repositories (API returns 403: upgrade to Pro or make public). CI and gitleaks still run on every PR; they are just not enforced by a platform merge gate until the repo is public again or the account has Pro.
+On a **free** account, **private** repos cannot use branch protection (API 403). **Public** repos can — protection is applied via the CLI block above (`required_status_checks` → **`ci`**).
 
-**Workaround until then:** merge only via PR; never push directly to `main`; treat green **`ci`** as mandatory by discipline.
+If the repo is flipped private again, protection rules are removed by GitHub; re-apply after returning to public (or use GitHub Pro for private protection).
