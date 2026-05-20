@@ -10,7 +10,10 @@ SAMPLE_LIST_RESPONSE = {
     "rsp": {
         "stat": "ok",
         "maps": {
-            "page": "1", "pages": "1", "perpage": "100", "total": "2",
+            "page": "1",
+            "pages": "1",
+            "perpage": "100",
+            "total": "2",
             "map": [
                 {"id": "111", "title": "My Map", "modified": "2026-01-01 10:00:00", "owner": "42"},
                 {
@@ -19,8 +22,8 @@ SAMPLE_LIST_RESPONSE = {
                     "modified": "2026-01-02 10:00:00",
                     "owner": "42",
                 },
-            ]
-        }
+            ],
+        },
     }
 }
 
@@ -54,9 +57,7 @@ def test_export_map_returns_bytes():
 @responses.activate
 def test_export_map_uses_map_images_for_png():
     responses.add(
-        responses.GET,
-        "https://www.mindmeister.com/api/v2/map_images/111.png",
-        body=b"\x89PNG"
+        responses.GET, "https://www.mindmeister.com/api/v2/map_images/111.png", body=b"\x89PNG"
     )
     client = MindMeisterClient("test_token")
     data = client.export_map("111", "png")
@@ -75,9 +76,12 @@ def test_list_maps_handles_single_map():
         "rsp": {
             "stat": "ok",
             "maps": {
-                "page": "1", "pages": "1", "perpage": "100", "total": "1",
-                "map": {"id": "111", "title": "Only Map", "modified": "2026-01-01", "owner": "42"}
-            }
+                "page": "1",
+                "pages": "1",
+                "perpage": "100",
+                "total": "1",
+                "map": {"id": "111", "title": "Only Map", "modified": "2026-01-01", "owner": "42"},
+            },
         }
     }
     responses.add(responses.GET, LIST_MAPS_URL, json=single_map_response)

@@ -28,8 +28,10 @@ def test_cli_runs_export(monkeypatch, tmp_path):
     mock_client.list_maps.return_value = [MagicMock(id="1", title="T", modified="", owner="")]
     mock_exporter = MagicMock()
     mock_exporter.export_all.return_value = {"ok": ["T"], "skipped": [], "failed": []}
-    with patch("meister_export.cli.MindMeisterClient", return_value=mock_client), \
-         patch("meister_export.cli.Exporter", return_value=mock_exporter):
+    with (
+        patch("meister_export.cli.MindMeisterClient", return_value=mock_client),
+        patch("meister_export.cli.Exporter", return_value=mock_exporter),
+    ):
         main(["--format", "pdf", "--output", str(tmp_path)])
     mock_exporter.export_all.assert_called_once()
 
@@ -54,7 +56,9 @@ def test_cli_token_flag_overrides_env(monkeypatch, tmp_path, capsys):
     mock_client.list_maps.return_value = []
     mock_exporter = MagicMock()
     mock_exporter.export_all.return_value = {"ok": [], "skipped": [], "failed": []}
-    with patch("meister_export.cli.MindMeisterClient", return_value=mock_client) as mock_cls, \
-         patch("meister_export.cli.Exporter", return_value=mock_exporter):
+    with (
+        patch("meister_export.cli.MindMeisterClient", return_value=mock_client) as mock_cls,
+        patch("meister_export.cli.Exporter", return_value=mock_exporter),
+    ):
         main(["--token", "my_cli_token", "--output", str(tmp_path)])
     mock_cls.assert_called_once_with("my_cli_token")
