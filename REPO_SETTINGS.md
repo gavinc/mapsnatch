@@ -31,6 +31,7 @@ gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 | **Secret push protection** | Settings → Code security | **Enabled** — blocks pushes with known secret patterns |
 | **CodeQL** | Settings → Code security → Code scanning | **Enabled** — default setup, Python + Actions, weekly |
 | **Environment `pypi`** | Settings → Environments | Create for trusted publishing (see [PYPI_SETUP.md](./PYPI_SETUP.md)) |
+| **Sponsorships** | Settings → General → Features | **Enable** — required for sidebar **Sponsor** button with [.github/FUNDING.yml](./.github/FUNDING.yml) |
 
 ## Security stack (current)
 

@@ -1,1 +1,3 @@
+# Sponsor button (repo sidebar). Format: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+# Operator must also enable Settings → General → Features → Sponsorships (one-time; not available via REST API).
 ko_fi: D5G31ZW8MC

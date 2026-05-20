@@ -29,9 +29,7 @@ Please **do not** post personal access tokens in issues or email.
 
 The CLI is free (AGPL). If it helped you avoid a Business plan or a weekend of manual exports:
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D5G31ZW8MC)
-
-GitHub also shows a **Sponsor** link via [.github/FUNDING.yml](./.github/FUNDING.yml).
+On GitHub, use the **Sponsor** button in the repository sidebar (configured in [.github/FUNDING.yml](./.github/FUNDING.yml) → Ko-fi).
 
 ## MindMeister upstream
 
