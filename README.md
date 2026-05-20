@@ -1,6 +1,7 @@
 # MapSnatch
 
 [![CI](https://github.com/gavinc/mapsnatch/actions/workflows/ci.yml/badge.svg)](https://github.com/gavinc/mapsnatch/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/mapsnatch.svg)](https://pypi.org/project/mapsnatch/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](./LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-purple)](https://gavinc.github.io/mapsnatch/)
@@ -22,19 +23,23 @@ If this CLI saves you time, tips are welcome (not required):
 
 ## Install
 
-**PyPI:** not published yet — there is no `pip install mapsnatch` on PyPI. First release needs [PYPI_SETUP.md](./PYPI_SETUP.md) (trusted publisher + `v0.1.0` tag).
-
-**From GitHub (works today):**
-
 ```bash
-git clone https://github.com/gavinc/mapsnatch
-cd mapsnatch
-pip install -e .
+pip install mapsnatch
 echo "MINDMEISTER_API_TOKEN=your_personal_access_token_here" > .env
 mapsnatch
 ```
 
 Create a personal access token at [mindmeister.com/api](https://www.mindmeister.com/api)
+
+**From source (development):**
+
+```bash
+git clone https://github.com/gavinc/mapsnatch
+cd mapsnatch
+pip install -e ".[dev]"
+```
+
+Releases and PyPI publishing: [PYPI_SETUP.md](./PYPI_SETUP.md)
 
 ## Supported formats
 

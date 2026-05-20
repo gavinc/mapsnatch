@@ -7,13 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-20
+
 ### Added
 
+- Initial PyPI release (`pip install mapsnatch`) via OIDC trusted publishing
 - F-lite security: `pip-audit` CI job; Dependabot security update PRs enabled
 - `secret-scan` CI job: gitleaks on full git history (blocks `.env` / `.env~` commits)
-- Community health files, CI, docs site, PyPI release workflow
-
-## [0.1.0] - 2026-05-19
+- Community health files, CI, docs site, GitHub Pages, release workflow
 
 ### Added
 
