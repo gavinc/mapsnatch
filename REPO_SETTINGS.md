@@ -27,8 +27,22 @@ gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 | **Private vulnerability reporting** | Settings → Security → Private vulnerability reporting | **Enable** |
 | **Social preview** | Settings → General → Social preview | Upload `.github/social-preview.png` (1280×640) |
 | **Branch protection** | Settings → Branches → `main` | Require PR, require aggregate **`ci`** — **only on public repos or GitHub Pro private repos** (see below) |
-| **Secret push protection** | Settings → Code security | Enable if available on plan (complements gitleaks in CI) |
+| **Secret scanning** | Settings → Code security | **Enabled** (May 2026) |
+| **Secret push protection** | Settings → Code security | **Enabled** — blocks pushes with known secret patterns |
+| **CodeQL** | Settings → Code security → Code scanning | **Enabled** — default setup, Python + Actions, weekly |
 | **Environment `pypi`** | Settings → Environments | Create for trusted publishing (see [PYPI_SETUP.md](./PYPI_SETUP.md)) |
+
+## Security stack (current)
+
+| Layer | What it catches |
+|-------|------------------|
+| **gitleaks** (`secret-scan` in `ci`) | Committed tokens in git history / PR diffs |
+| **GitHub secret push protection** | Known-pattern secrets at `git push` time |
+| **GitHub secret scanning** | Secrets already on default branch; partner alerts |
+| **CodeQL** | Python/Actions code vulnerabilities (SAST) |
+| **pip-audit** (`security-audit` in `ci`) | CVEs in runtime dependencies |
+
+CodeQL is **not** wired into the required **`ci`** branch check unless you add CodeQL check names under branch protection.
 
 ## Branch protection (CLI)
 
