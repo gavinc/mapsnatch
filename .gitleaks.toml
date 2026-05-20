@@ -1,0 +1,16 @@
+title = "mapsnatch gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders and internal plans"
+paths = [
+  '''\.env\.example$''',
+  '''^docs/plans/''',
+]
+regexes = [
+  '''your_personal_access_token_here''',
+  '''my_secret_token''',
+  '''test_token''',
+]

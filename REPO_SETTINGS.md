@@ -26,7 +26,8 @@ gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 | **GitHub Pages** | Settings → Pages | Source: **GitHub Actions** |
 | **Private vulnerability reporting** | Settings → Security → Private vulnerability reporting | **Enable** |
 | **Social preview** | Settings → General → Social preview | Upload `.github/social-preview.png` (1280×640) |
-| **Branch protection** | Settings → Branches → `main` | Require PR, require **CI** status check |
+| **Branch protection** | Settings → Branches → `main` | Require PR, require aggregate **`ci`** (lint + `secret-scan` + `security-audit`) |
+| **Secret push protection** | Settings → Code security | Enable if available on plan (complements gitleaks in CI) |
 | **Environment `pypi`** | Settings → Environments | Create for trusted publishing (see [PYPI_SETUP.md](./PYPI_SETUP.md)) |
 
 ## Branch protection (CLI)
