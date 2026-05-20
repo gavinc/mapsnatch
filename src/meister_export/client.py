@@ -18,7 +18,7 @@ class MapInfo:
 class MindMeisterClient:
     def __init__(self, token: str, rate_limit_delay: float = 0.5):
         if not token:
-            raise ValueError("API token is required")
+            raise ValueError("Personal access token is required")
         self._token = token
         self._delay = rate_limit_delay
         self._session = requests.Session()

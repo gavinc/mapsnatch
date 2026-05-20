@@ -15,7 +15,7 @@
 | **support@mapsnatch.com** | Account/help with the **hosted** app at [mapsnatch.com](https://mapsnatch.com) |
 | **security@mapsnatch.com** | Vulnerabilities (see [SECURITY.md](./SECURITY.md)) |
 
-Please **do not** post API tokens in issues or email.
+Please **do not** post personal access tokens in issues or email.
 
 ## Hosted vs CLI
 
@@ -35,4 +35,4 @@ GitHub also shows a **Sponsor** link via [.github/FUNDING.yml](./.github/FUNDING
 
 ## MindMeister upstream
 
-API and account problems: [MindMeister API](https://www.mindmeister.com/api) · [API settings](https://www.mindmeister.com/api/settings)
+API and account problems: [mindmeister.com/api](https://www.mindmeister.com/api)

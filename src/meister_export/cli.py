@@ -58,7 +58,7 @@ def main(argv=None):
         "--token",
         "-t",
         default=None,
-        help="API token (or set MINDMEISTER_API_TOKEN env var / .env file)",
+        help="Personal access token (or MINDMEISTER_API_TOKEN env var / .env file)",
     )
     parser.add_argument(
         "--list-formats",
@@ -89,10 +89,10 @@ def main(argv=None):
     token = args.token or os.environ.get("MINDMEISTER_API_TOKEN")
     if not token:
         print(
-            "Error: no API token found.\n"
+            "Error: no personal access token found.\n"
             "Set MINDMEISTER_API_TOKEN in your environment or .env file,\n"
             "or pass --token YOUR_TOKEN\n\n"
-            "Get your token at: https://www.mindmeister.com/api/settings",
+            "Create a token at: https://www.mindmeister.com/api",
             file=sys.stderr,
         )
         sys.exit(1)

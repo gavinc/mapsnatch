@@ -33,7 +33,7 @@ flowchart LR
 
 ## Data flow
 
-1. Authenticate with personal API token (never logged by the CLI).
+1. Authenticate with a personal access token (never logged by the CLI).
 2. Fetch full map list once.
 3. For each map, download bytes for the chosen format.
 4. Save to disk; failures surface per-map without stopping the whole run (see tests for behavior).

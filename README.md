@@ -30,7 +30,7 @@ echo "MINDMEISTER_API_TOKEN=your_token_here" > .env
 mapsnatch
 ```
 
-Get your API token at: https://www.mindmeister.com/api/settings
+Create a personal access token at [mindmeister.com/api](https://www.mindmeister.com/api)
 
 ## Supported formats
 
@@ -52,7 +52,7 @@ mapsnatch [OPTIONS]
 Options:
   --format, -f    Export format: mm, pdf, mind, xmind, rtf  (default: mm)
   --output, -o    Output directory                           (default: ./exports)
-  --token, -t     API token (or set MINDMEISTER_API_TOKEN env var / .env file)
+  --token, -t     Personal access token (or MINDMEISTER_API_TOKEN in env / .env)
   --dry-run       List maps without downloading
   --list-formats  Show supported formats and exit
 ```
@@ -69,8 +69,8 @@ mapsnatch --format pdf --output ~/mindmaps
 # List what maps would be exported without downloading
 mapsnatch --dry-run
 
-# Use a token directly without .env
-mapsnatch --token YOUR_TOKEN_HERE
+# Pass personal access token on the command line
+mapsnatch --token YOUR_PERSONAL_ACCESS_TOKEN
 ```
 
 ## How it works
@@ -82,7 +82,7 @@ MindMeister provides a public REST API (v1 + v2) that allows any authenticated u
 3. Extracts the file from its zip container (for `mm`, `mind`, `xmind` formats)
 4. Saves it with a sanitised filename into your output directory
 
-Auth uses a personal Bearer token — no OAuth dance required.
+Auth uses your personal access token as a Bearer credential — no OAuth dance required.
 
 ## Opening exported files
 
@@ -93,11 +93,11 @@ Auth uses a personal Bearer token — no OAuth dance required.
 
 ## Setup
 
-### Get your API token
+### Get your personal access token
 
 1. Log in to MindMeister
-2. Go to https://www.mindmeister.com/api/settings
-3. Copy your personal API token
+2. Open [mindmeister.com/api](https://www.mindmeister.com/api) and create a **personal access token**
+3. Copy the token (not the same as MindMeister's separate "API keys" product)
 
 ### Configure
 

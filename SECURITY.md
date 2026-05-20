@@ -31,8 +31,9 @@ We aim to acknowledge reports within **3 business days** and will keep you updat
 - Issues with MindMeister's API or account security (report to Meister Labs)
 - The hosted web app at [mapsnatch.com](https://mapsnatch.com) (separate private deployment; still report via the same email and we will route it)
 
-## Safe handling of API tokens
+## Safe handling of personal access tokens
 
+- Create tokens only at [mindmeister.com/api](https://www.mindmeister.com/api) — not MindMeister "API keys"
 - Never commit tokens or paste them into public issues
 - Use `.env` locally (gitignored) or `MINDMEISTER_API_TOKEN` in your shell
-- Revoke and rotate tokens at [MindMeister API settings](https://www.mindmeister.com/api/settings) if you suspect exposure
+- Revoke and rotate at mindmeister.com/api if you suspect exposure

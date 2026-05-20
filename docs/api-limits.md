@@ -1,6 +1,6 @@
 # MindMeister API limits
 
-MapSnatch only uses endpoints that work with a **personal API token** on standard plans. Behavior can change if Meister updates their API.
+MapSnatch only uses endpoints that work with a **personal access token** from [mindmeister.com/api](https://www.mindmeister.com/api) on standard plans. Behavior can change if Meister updates their API.
 
 ## Supported export formats
 
@@ -27,7 +27,7 @@ The client sleeps **0.5s** between export downloads by default to avoid hammerin
 
 ## Authentication
 
-- Token from [MindMeister API settings](https://www.mindmeister.com/api/settings)
+- Personal access token from [mindmeister.com/api](https://www.mindmeister.com/api)
 - Sent as `Authorization: Bearer <token>`
 - **Never** commit tokens; revoke at Meister if leaked
 
