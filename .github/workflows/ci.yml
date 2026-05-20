@@ -55,3 +55,14 @@ jobs:
           pip install pip-audit
           pip install -r requirements-prod.txt
           pip-audit -r requirements-prod.txt
+
+  all-checks:
+    name: ci
+    needs: [lint-test, security-audit]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require lint, test, and security audit
+        run: |
+          test "${{ needs.lint-test.result }}" = "success"
+          test "${{ needs.security-audit.result }}" = "success"

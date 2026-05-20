@@ -34,7 +34,7 @@ gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 ```bash
 gh api repos/gavinc/mapsnatch/branches/main/protection -X PUT \
   -f required_status_checks[strict]=true \
-  -f required_status_checks[contexts][]=lint-test \
+  -f required_status_checks[contexts][]=ci \
   -f enforce_admins=true \
   -f required_pull_request_reviews[required_approving_review_count]=0 \
   -f restrictions=null
