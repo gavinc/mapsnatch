@@ -31,7 +31,7 @@ gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 | **Secret push protection** | Settings → Code security | **Enabled** — blocks pushes with known secret patterns |
 | **CodeQL** | Settings → Code security → Code scanning | **Enabled** — default setup, Python + Actions, weekly |
 | **Environment `pypi`** | Settings → Environments | Create for trusted publishing (see [PYPI_SETUP.md](./PYPI_SETUP.md)) |
-| **Sponsorships** | Settings → General → Features | **Enable**, then **Set up sponsor button** (GitHub UI only — not via git alone). If setup says *file already exists* or the green button persists after an agent commit, **delete** `.github/FUNDING.yml` on `main`, then use **Set up sponsor button** once and commit **only** bare YAML, e.g. `ko_fi: D5G31ZW8MC` (no `#` comments in the committed file). |
+| **Sponsorships** | Settings → General → Features | **Enable** + valid [.github/FUNDING.yml](./.github/FUNDING.yml). Use Ko-fi **username** (`gavin_c`), not the page ID in the URL (`D5G31ZW8MC`). Verify with `gh api graphql` → `repository.fundingLinks` must be non-empty. No leading spaces or `#` comments in the committed file. |
 
 ## Security stack (current)
 
