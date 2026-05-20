@@ -26,7 +26,7 @@ gh api repos/gavinc/mapsnatch/automated-security-fixes -X PUT
 | **GitHub Pages** | Settings → Pages | Source: **GitHub Actions** |
 | **Private vulnerability reporting** | Settings → Security → Private vulnerability reporting | **Enable** |
 | **Social preview** | Settings → General → Social preview | Upload `.github/social-preview.png` (1280×640) |
-| **Branch protection** | Settings → Branches → `main` | Require PR, require aggregate **`ci`** (lint + `secret-scan` + `security-audit`) |
+| **Branch protection** | Settings → Branches → `main` | Require PR, require aggregate **`ci`** — **only on public repos or GitHub Pro private repos** (see below) |
 | **Secret push protection** | Settings → Code security | Enable if available on plan (complements gitleaks in CI) |
 | **Environment `pypi`** | Settings → Environments | Create for trusted publishing (see [PYPI_SETUP.md](./PYPI_SETUP.md)) |
 
@@ -42,3 +42,9 @@ gh api repos/gavinc/mapsnatch/branches/main/protection -X PUT \
 ```
 
 Adjust `contexts` if the CI job name differs after the first workflow run.
+
+## Private repo + free GitHub plan
+
+After the May 2026 incident, `mapsnatch` was set **private**. On a **free** account, GitHub **does not offer branch protection rules** on private repositories (API returns 403: upgrade to Pro or make public). CI and gitleaks still run on every PR; they are just not enforced by a platform merge gate until the repo is public again or the account has Pro.
+
+**Workaround until then:** merge only via PR; never push directly to `main`; treat green **`ci`** as mandatory by discipline.

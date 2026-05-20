@@ -20,13 +20,17 @@ If this CLI saves you time, tips are welcome (not required):
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D5G31ZW8MC)
 
-## Quickstart
+## Install
+
+**PyPI:** not published yet — there is no `pip install mapsnatch` on PyPI. First release needs [PYPI_SETUP.md](./PYPI_SETUP.md) (trusted publisher + `v0.1.0` tag).
+
+**From GitHub (works today):**
 
 ```bash
 git clone https://github.com/gavinc/mapsnatch
 cd mapsnatch
 pip install -e .
-echo "MINDMEISTER_API_TOKEN=your_token_here" > .env
+echo "MINDMEISTER_API_TOKEN=your_personal_access_token_here" > .env
 mapsnatch
 ```
 
