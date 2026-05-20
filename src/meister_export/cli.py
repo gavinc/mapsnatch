@@ -1,6 +1,5 @@
 import os
 import sys
-from pathlib import Path
 
 try:
     from dotenv import load_dotenv
@@ -12,6 +11,15 @@ from meister_export.client import MindMeisterClient
 from meister_export.exporter import Exporter
 
 SUPPORTED_FORMATS = ["pdf", "mm", "mind", "xmind", "rtf"]
+def _package_version() -> str:
+    try:
+        from importlib.metadata import version
+
+        return version("mapsnatch")
+    except Exception:
+        return "0.1.0"
+
+
 FORMAT_DESC = {
     "pdf":   "PDF document (good for archiving/sharing)",
     "mm":    "FreeMind format — open in FreeMind or Freeplane (recommended)",
@@ -23,6 +31,7 @@ FORMAT_DESC = {
 
 def main(argv=None):
     import argparse
+
     from tqdm import tqdm
 
     parser = argparse.ArgumentParser(
@@ -54,6 +63,11 @@ def main(argv=None):
         "--dry-run",
         action="store_true",
         help="List maps that would be exported without downloading",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=_package_version(),
     )
 
     args = parser.parse_args(argv)

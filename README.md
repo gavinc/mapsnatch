@@ -1,7 +1,9 @@
 # MapSnatch
 
+[![CI](https://github.com/gavinc/mapsnatch/actions/workflows/ci.yml/badge.svg)](https://github.com/gavinc/mapsnatch/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](./LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-purple)](https://gavinc.github.io/mapsnatch/)
 
 > MindMeister lets you export maps one at a time unless you pay for a Business plan.
 > This tool gives you bulk export using their own public API — available on all plan types including free.
@@ -11,6 +13,7 @@
 | | |
 |---|---|
 | [Contributing](./CONTRIBUTING.md) | [Security](./SECURITY.md) |
+| [Support](./SUPPORT.md) | [Docs](https://gavinc.github.io/mapsnatch/) |
 | [Code of Conduct](./CODE_OF_CONDUCT.md) | [Report a bug](https://github.com/gavinc/mapsnatch/issues/new?template=bug_report.yml) |
 
 ## Quickstart

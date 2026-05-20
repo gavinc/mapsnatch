@@ -2,7 +2,8 @@ import io
 import re
 import zipfile
 from pathlib import Path
-from meister_export.client import MindMeisterClient, MapInfo
+
+from meister_export.client import MapInfo, MindMeisterClient
 
 ZIPPED_FORMATS = {"mm", "mind", "xmind", "mmind"}
 

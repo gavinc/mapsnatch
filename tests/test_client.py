@@ -1,6 +1,7 @@
-import responses
 import pytest
-from meister_export.client import MindMeisterClient, MapInfo
+import responses
+
+from meister_export.client import MindMeisterClient
 
 LIST_MAPS_URL = "https://www.mindmeister.com/services/rest/oauth2"
 EXPORT_BASE = "https://www.mindmeister.com/api/v2/maps"
@@ -12,7 +13,12 @@ SAMPLE_LIST_RESPONSE = {
             "page": "1", "pages": "1", "perpage": "100", "total": "2",
             "map": [
                 {"id": "111", "title": "My Map", "modified": "2026-01-01 10:00:00", "owner": "42"},
-                {"id": "222", "title": "Another Map", "modified": "2026-01-02 10:00:00", "owner": "42"},
+                {
+                    "id": "222",
+                    "title": "Another Map",
+                    "modified": "2026-01-02 10:00:00",
+                    "owner": "42",
+                },
             ]
         }
     }
