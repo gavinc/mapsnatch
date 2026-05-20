@@ -18,8 +18,25 @@ dependencies = [
 [project.scripts]
 mapsnatch = "meister_export.cli:main"
 
+[project.urls]
+Homepage = "https://mapsnatch.com"
+Documentation = "https://gavinc.github.io/mapsnatch/"
+Repository = "https://github.com/gavinc/mapsnatch"
+Changelog = "https://github.com/gavinc/mapsnatch/blob/main/CHANGELOG.md"
+Issues = "https://github.com/gavinc/mapsnatch/issues"
+
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-mock>=3", "responses>=0.25"]
+dev = ["pytest>=8", "pytest-mock>=3", "responses>=0.25", "ruff>=0.8"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]

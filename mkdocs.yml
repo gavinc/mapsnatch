@@ -1,0 +1,43 @@
+site_name: MapSnatch CLI
+site_description: Bulk-export MindMeister maps without a Business plan
+site_url: https://gavinc.github.io/mapsnatch/
+repo_url: https://github.com/gavinc/mapsnatch
+repo_name: gavinc/mapsnatch
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Light mode
+    - scheme: default
+      primary: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Dark mode
+  features:
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - API limits: api-limits.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+validation:
+  omitted_files: ignore
+  absolute_links: ignore
+
+exclude_docs: |
+  plans/

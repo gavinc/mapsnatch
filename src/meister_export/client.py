@@ -1,6 +1,6 @@
-from dataclasses import dataclass
-from typing import Optional
 import time
+from dataclasses import dataclass
+
 import requests
 
 LIST_URL = "https://www.mindmeister.com/services/rest/oauth2"

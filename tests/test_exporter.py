@@ -1,8 +1,14 @@
-import zipfile, io, os
-import pytest
-from unittest.mock import MagicMock, patch
+import io
+import zipfile
+from unittest.mock import MagicMock
+
 from meister_export.client import MapInfo
-from meister_export.exporter import Exporter, ZIPPED_FORMATS, detect_content_type, validate_directory
+from meister_export.exporter import (
+    ZIPPED_FORMATS,
+    Exporter,
+    detect_content_type,
+    validate_directory,
+)
 
 
 def make_zip(*entries: tuple) -> bytes:
