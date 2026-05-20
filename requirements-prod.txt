@@ -1,0 +1,4 @@
+# Production runtime only — used by CI pip-audit (see .github/workflows/ci.yml)
+requests>=2.31
+python-dotenv>=1.0
+tqdm>=4.66

@@ -25,10 +25,13 @@ class MindMeisterClient:
         self._session.headers["Authorization"] = f"Bearer {token}"
 
     def list_maps(self) -> list:
-        resp = self._session.get(LIST_URL, params={
-            "method": "mm.maps.getList",
-            "output": "json",
-        })
+        resp = self._session.get(
+            LIST_URL,
+            params={
+                "method": "mm.maps.getList",
+                "output": "json",
+            },
+        )
         resp.raise_for_status()
         data = resp.json()
         if data["rsp"]["stat"] != "ok":
