@@ -1,9 +1,6 @@
 # AGENTS.md
 
-> If `SOUL.md` exists in this repo, read it before proceeding. It defines
-> personality and values. If absent, operate with professional restraint.
-
----
+Guidance for AI coding assistants working on this repo.
 
 ## Issues-first workflow (mandatory)
 
@@ -31,51 +28,83 @@ Before writing implementation code:
 
 If the operator describes substantive work but no issue exists, **create the issue first**, paste the URL back, then proceed.
 
----
-
-## Progress Reporting
-
-Each update is one line:
+## Repository shape
 
 ```
-<STATE> | <DELTA> | <NEXT> | <ASK>
+src/meister_export/         Python package - the actual tool
+  cli.py                    argparse entrypoint, `mapsnatch` console script
+  client.py                 MindMeister API client (single token-bearing surface)
+  exporter.py               format-specific export (md, pdf, etc.)
+tests/                      pytest suite (test_cli.py, test_client.py, test_exporter.py)
+docs/                       mkdocs source (architecture.md, api-limits.md, index.md)
+security/semgrep/           project-specific Semgrep rules (token-leak guards)
+scripts/owasp-gate.sh       local mirror of CI owasp-sast job
+.github/workflows/          ci.yml (lint/test/owasp/secrets/audit), release.yml (PyPI), docs.yml (Pages)
+PYPI_SETUP.md               operator wiring for the `pypi` environment + token / OIDC
+REPO_SETTINGS.md            canonical record of GitHub-side controls
+pyproject.toml              build config; dependencies pinned in requirements-prod.txt
 ```
 
-**STATE:** `moving` · `blocked` · `done`
-**DELTA:** What changed. New only. No history.
-**NEXT:** What happens next without operator input.
-**ASK:** Required operator action, or `none`.
+## What you can change without asking
 
-Rules:
-- One line. No logs, no reasoning.
-- `moving` → ASK is `none`
-- `blocked` → ASK is concrete and actionable
-- No meaningful change twice in a row → STATE becomes `blocked`
+- Bug fixes inside `src/meister_export/` that are covered by an issue.
+- New / expanded tests in `tests/`.
+- Doc edits (`README.md`, `CONTRIBUTING.md`, `docs/`, `mkdocs.yml`).
+- CI tuning that doesn't loosen security gates.
+- Adding new Semgrep rules under `security/semgrep/mapsnatch.yml` to harden the token surface further.
+
+## What needs operator approval
+
+- Renaming or removing existing CLI flags (back-compat break for scripted users).
+- Adding runtime dependencies beyond `requests`, `python-dotenv`, `tqdm` (the lean dep list is a feature - argue why before extending).
+- Touching `.github/workflows/release.yml` (it has PyPI publish credentials).
+- Switching the licence (currently AGPL-3.0-or-later; matched in README + `pyproject.toml`).
+- Major architectural changes (e.g. swapping `requests` for `httpx`, async refactor).
+- Loosening the OWASP SAST gate (no `--no-error`, no `nosemgrep:` comments without operator sign-off).
+
+## Local verification before opening a PR
+
+```bash
+ruff check src tests                 # lint
+ruff format --check src tests        # format
+python -m pytest -v                  # unit tests
+bash scripts/owasp-gate.sh           # Semgrep gate (Docker or pipx semgrep)
+pip-audit -r requirements-prod.txt   # dependency CVE audit
+```
+
+CI runs the same checks (`lint-test` matrix on Python 3.9/3.11/3.12 + `owasp-sast` + `secret-scan` + `security-audit`). PRs can't merge to `main` until the aggregate `ci` job is green.
+
+## Conventional commits
+
+PR titles use [Conventional Commits](https://www.conventionalcommits.org/). Examples:
 
 ```
-moving | tests added | running CI | none
-blocked | missing env var | waiting | add STRIPE_KEY
-done | deployed to prod | monitoring | none
+feat: add --format html exporter
+fix: handle 429 with exponential backoff
+docs: document MindMeister rate limits
+chore: bump pinned requests to 2.31.1
+ci: pin semgrep image to 1.122.0
+refactor: extract HTTP retry helper from client.py
+test: add fixture for missing-token error path
 ```
 
----
+Breaking changes get a `!` suffix or a `BREAKING CHANGE:` footer. Release notes come from these on each tag.
 
-## Decision Contract
+## Style anchors
 
-**Ambiguity** — Ask before acting. One focused question, not a list.
-**Done** — Tests pass. Code committed. Operator unblocked.
-**Scope** — Do exactly what was asked. Flag additions as options; don't implement them.
-**Blockers** — Surface immediately. Never work around a blocker silently.
+- **Python:** 3.9+ compatible. Stdlib + the three pinned runtime deps only. Async / new typing syntax allowed but verify 3.9 still parses.
+- **Dependencies:** Production deps live in `requirements-prod.txt` (audited by CI). Dev deps live in `[project.optional-dependencies].dev` in `pyproject.toml`.
+- **Linting:** `ruff` is the source of truth - both `ruff check` and `ruff format --check` must pass.
+- **MindMeister token:** Read from `MINDMEISTER_API_TOKEN` env var or `--token` CLI flag. **Never** `print()`, `log`, or interpolate into f-strings outside the `Authorization` header construction. The Semgrep rules in `security/semgrep/mapsnatch.yml` enforce this and **will block CI** on violations.
+- **HTTP errors:** Let `client.py` map them to the project's exception hierarchy. Don't leak raw `requests.exceptions.*` to the CLI layer.
 
----
+## Where the brand canon lives
 
-## Communication
+- `README.md` - user-facing pitch, install, CLI usage.
+- `AGENTS.md` (this file) - agent-facing rules.
+- `CONTRIBUTING.md` - human contributor workflow (issue → branch → PR → review).
+- `SECURITY.md` - private vulnerability disclosure path.
+- `PYPI_SETUP.md` / `REPO_SETTINGS.md` - operator-only setup + canonical settings record.
+- `docs/` (mkdocs site) - architecture deep-dives, API limit walkthrough, longer-form contributor docs.
 
-No narration. No recaps. No "here's what I did."
-Report results, not activity. If nothing changed, say so.
-
----
-
-## CursorVox cockpit (visual review)
-
-For **CursorVox** UI judgments ("go look at the interface"), use the mobile screenshot harness and vision on the PNGs. See **`~/coding/cursorvox/AGENTS.md`** (Visual review section): `cd ~/coding/cursorvox/frontend && npm run capture-ui`, then read `screenshots/mobile-cockpit/*.png`.
+Update all relevant files when changing the area they cover. Don't put policy in one that belongs in another.
