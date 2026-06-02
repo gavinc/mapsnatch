@@ -14,3 +14,9 @@ site/
 *.rtf
 .venv/
 venv/
+
+# agent / skill tool dirs (per perfect-github skill, Tier I+)
+.agents/
+.claude/
+.cursor/
+.skills/
