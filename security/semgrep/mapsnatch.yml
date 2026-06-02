@@ -1,0 +1,60 @@
+rules:
+  - id: mapsnatch-no-token-in-print
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Do not print MindMeister API tokens. The token is sensitive and a
+      misplaced `print()` leaks it to terminal scrollback, CI logs, and crash
+      reports. If you need debugging output for auth flow, log a truthiness
+      check ("token present: True") instead.
+    patterns:
+      - pattern-either:
+          - pattern: print(..., $TOKEN, ...)
+          - pattern: print($TOKEN)
+      - metavariable-regex:
+          metavariable: $TOKEN
+          regex: (?i)^.*(token|api[_-]?key|authorization|mindmeister).*$
+
+  - id: mapsnatch-no-token-in-log
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Do not pass MindMeister tokens to logging.* calls. Tokens get persisted
+      to log aggregators / log files / stdout depending on handler config.
+      Mask before logging (token[:4] + "...") or just log a truthiness check.
+    patterns:
+      - pattern-either:
+          - pattern: logging.$LEVEL(..., $TOKEN, ...)
+          - pattern: log.$LEVEL(..., $TOKEN, ...)
+          - pattern: logger.$LEVEL(..., $TOKEN, ...)
+      - metavariable-regex:
+          metavariable: $TOKEN
+          regex: (?i)^.*(token|api[_-]?key|authorization|mindmeister).*$
+
+  - id: mapsnatch-no-token-in-fstring-print
+    languages: [python]
+    severity: ERROR
+    message: >-
+      f-string interpolation of a token-bearing name inside a print() leaks
+      the token. Same fix as mapsnatch-no-token-in-print: redact or replace
+      with a truthiness check.
+    patterns:
+      - pattern: print(f"...{$TOKEN}...")
+      - metavariable-regex:
+          metavariable: $TOKEN
+          regex: (?i)^.*(token|api[_-]?key|authorization|mindmeister).*$
+
+  - id: mapsnatch-no-token-in-fstring-log
+    languages: [python]
+    severity: ERROR
+    message: >-
+      f-string interpolation of a token-bearing name inside a logging call
+      leaks the token. Same fix as mapsnatch-no-token-in-log.
+    patterns:
+      - pattern-either:
+          - pattern: logging.$LEVEL(f"...{$TOKEN}...")
+          - pattern: log.$LEVEL(f"...{$TOKEN}...")
+          - pattern: logger.$LEVEL(f"...{$TOKEN}...")
+      - metavariable-regex:
+          metavariable: $TOKEN
+          regex: (?i)^.*(token|api[_-]?key|authorization|mindmeister).*$

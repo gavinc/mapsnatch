@@ -83,14 +83,32 @@ jobs:
           fi
           ./gitleaks detect --source . --config .gitleaks.toml --log-opts="$LOG_OPTS" --verbose --redact --no-banner
 
+  owasp-sast:
+    name: owasp-sast
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep:1.122.0
+    steps:
+      - uses: actions/checkout@v6
+      - name: Semgrep OWASP gate
+        run: |
+          semgrep scan \
+            --config p/owasp-top-ten \
+            --config p/python \
+            --config p/secrets \
+            --config security/semgrep/ \
+            --error \
+            --metrics off
+
   all-checks:
     name: ci
-    needs: [lint-test, security-audit, secret-scan]
+    needs: [lint-test, security-audit, secret-scan, owasp-sast]
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Require lint, test, dependency audit, and secret scan
+      - name: Require lint, test, dependency audit, secret scan, and OWASP SAST
         run: |
           test "${{ needs.lint-test.result }}" = "success"
           test "${{ needs.security-audit.result }}" = "success"
           test "${{ needs.secret-scan.result }}" = "success"
+          test "${{ needs.owasp-sast.result }}" = "success"
