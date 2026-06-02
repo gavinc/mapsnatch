@@ -92,7 +92,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install semgrep
-        run: pip install semgrep==1.122.0
+        run: pip install setuptools semgrep==1.122.0
       - name: Semgrep OWASP gate
         run: |
           semgrep scan \
