@@ -86,10 +86,14 @@ jobs:
   owasp-sast:
     name: owasp-sast
     runs-on: ubuntu-latest
-    container:
-      image: semgrep/semgrep:1.122.0
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Install semgrep
+        run: pip install "setuptools>=68,<81" semgrep==1.122.0
       - name: Semgrep OWASP gate
         run: |
           semgrep scan \
