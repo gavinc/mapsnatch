@@ -113,28 +113,11 @@ jobs:
           test "${{ needs.secret-scan.result }}" = "success"
           test "${{ needs.owasp-sast.result }}" = "success"
 
-  merge-on-green:
-    name: merge-on-green
-    needs: [all-checks]
-    if: github.event_name == 'pull_request' && needs.all-checks.result == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Auto-merge Dependabot or automerge-labeled PR
-        env:
-          # MAPSNATCH_GITHUB_PAT (falls back to GITHUB_TOKEN): GITHUB_TOKEN-authored
-          # pushes don't trigger downstream `push` workflows (GitHub anti-loop), so a
-          # bare-token merge here would never fire docs.yml's Pages rebuild. Same PAT
-          # as mapsnatch-web; see that repo's ci.yml for the full reasoning.
-          GH_TOKEN: ${{ secrets.MAPSNATCH_GITHUB_PAT || secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          AUTHOR="${{ github.event.pull_request.user.login }}"
-          LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
-          if [[ "$AUTHOR" == *dependabot* ]] || echo "$LABELS" | grep -q automerge; then
-            gh pr merge "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --squash --delete-branch
-          else
-            echo "no auto-merge"
-          fi
+  # Dependabot/automerge-label auto-merge moved to .github/workflows/dependabot-auto-merge.yml
+  # (workflow_run, not a job here). A job on this pull_request-triggered workflow cannot
+  # read any Actions secret when the run was triggered by Dependabot specifically (GitHub
+  # blocks it outright, confirmed 2026-10-20 on mapsnatch-web by testing with a dummy
+  # secret value that silently went unused) -- so it can never use a PAT, so its merge
+  # push is always GITHUB_TOKEN-authored, so docs.yml's Pages rebuild never fires for it
+  # (GitHub anti-loop). workflow_run executes with the default branch's full secret access
+  # regardless of what triggered the CI run it's observing -- the sanctioned escape hatch.

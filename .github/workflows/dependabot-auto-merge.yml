@@ -1,0 +1,109 @@
+# Dependabot / automerge-label merge-on-green.
+#
+# Why workflow_run (not a job on the pull_request event): a job on the Dependabot
+# pull_request event cannot read any Actions secret -- GitHub blocks it outright,
+# regardless of permissions: (confirmed 2026-10-20 on mapsnatch-web by testing with
+# a dummy secret value that silently went unused). So it can never use a PAT, so its
+# merge push is always GITHUB_TOKEN-authored, so docs.yml's Pages rebuild never
+# fires for it (GitHub anti-loop: GITHUB_TOKEN-authored pushes don't trigger
+# downstream push workflows). workflow_run runs in the default branch's context --
+# full secret access -- regardless of what triggered the CI run it's observing.
+# That's what lets this job use a real PAT, which makes the resulting push a
+# genuine user push, which makes docs.yml fire normally.
+#
+# No major-version carve-out: patch, minor, and major Dependabot/automerge PRs all
+# merge on green here, no exceptions (operator decision 2026-10-20 -- see RULINGS.md
+# in the perfect-github-setup-and-operation skill). CI is the real gate.
+#
+# This workflow only exists on the default branch -- its own bootstrap PR will not
+# exercise it. First real run is the next Dependabot PR after this lands on main.
+
+name: Dependabot auto-merge
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+  actions: read
+
+jobs:
+  merge-on-green:
+    name: merge-on-green
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve PR for the commit CI validated
+        id: pr
+        env:
+          # Owner PAT so the push to main fires docs.yml's Pages rebuild. Falls back to
+          # GITHUB_TOKEN (merge still works; the resulting push just won't trigger it).
+          GH_TOKEN: ${{ secrets.MAPSNATCH_GITHUB_PAT || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          # workflow_run.pull_requests is empty for Dependabot; resolve by head SHA.
+          number=$(gh api "repos/${REPO}/commits/${HEAD_SHA}/pulls" \
+            --jq '.[0].number // empty')
+          if [ -z "${number}" ]; then
+            echo "No open/associated PR for ${HEAD_SHA}; nothing to merge."
+            echo "merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          meta=$(gh pr view "$number" --repo "$REPO" \
+            --json number,state,author,labels,headRefOid,url)
+          echo "$meta" | jq -c .
+          state=$(echo "$meta" | jq -r .state)
+          author=$(echo "$meta" | jq -r .author.login)
+          head=$(echo "$meta" | jq -r .headRefOid)
+          labels=$(echo "$meta" | jq -r '[.labels[].name] | join(",")')
+          if [ "$state" != "OPEN" ]; then
+            echo "PR #${number} is ${state}; skip."
+            echo "merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$head" != "$HEAD_SHA" ]; then
+            echo "PR head moved (${head} != ${HEAD_SHA}); wait for next CI."
+            echo "merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          is_dependabot=false
+          # Prefer string compare — bare [bot] in a case pattern is a char class.
+          if [ "$author" = "dependabot[bot]" ] || [ "$author" = "app/dependabot" ] || [[ "$author" == *dependabot* ]]; then
+            is_dependabot=true
+          fi
+          has_automerge=false
+          echo "$labels" | tr ',' '\n' | grep -qx 'automerge' && has_automerge=true || true
+          if [ "$is_dependabot" != true ] && [ "$has_automerge" != true ]; then
+            echo "PR #${number} author=${author} labels=${labels}; not Dependabot and no automerge label."
+            echo "merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "number=${number}" >> "$GITHUB_OUTPUT"
+          echo "merge=true" >> "$GITHUB_OUTPUT"
+          echo "url=$(echo "$meta" | jq -r .url)" >> "$GITHUB_OUTPUT"
+
+      - name: Squash-merge exact CI commit
+        if: steps.pr.outputs.merge == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.MAPSNATCH_GITHUB_PAT || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          gh pr merge "$PR" --repo "$REPO" --squash --delete-branch \
+            --match-head-commit "$HEAD_SHA"
+          echo "Merged PR #${PR} @ ${HEAD_SHA}."
