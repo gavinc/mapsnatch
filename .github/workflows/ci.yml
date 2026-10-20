@@ -112,3 +112,25 @@ jobs:
           test "${{ needs.security-audit.result }}" = "success"
           test "${{ needs.secret-scan.result }}" = "success"
           test "${{ needs.owasp-sast.result }}" = "success"
+
+  merge-on-green:
+    name: merge-on-green
+    needs: [all-checks]
+    if: github.event_name == 'pull_request' && needs.all-checks.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Auto-merge Dependabot or automerge-labeled PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          AUTHOR="${{ github.event.pull_request.user.login }}"
+          LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
+          if [[ "$AUTHOR" == *dependabot* ]] || echo "$LABELS" | grep -q automerge; then
+            gh pr merge "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --squash --delete-branch
+          else
+            echo "no auto-merge"
+          fi
