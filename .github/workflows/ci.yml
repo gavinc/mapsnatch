@@ -18,10 +18,10 @@ jobs:
         python-version: ["3.9", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -42,10 +42,10 @@ jobs:
   security-audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
 
@@ -59,7 +59,7 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
 
@@ -89,7 +89,7 @@ jobs:
     container:
       image: semgrep/semgrep:1.122.0
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Semgrep OWASP gate
         run: |
           semgrep scan \
@@ -112,3 +112,25 @@ jobs:
           test "${{ needs.security-audit.result }}" = "success"
           test "${{ needs.secret-scan.result }}" = "success"
           test "${{ needs.owasp-sast.result }}" = "success"
+
+  merge-on-green:
+    name: merge-on-green
+    needs: [all-checks]
+    if: github.event_name == 'pull_request' && needs.all-checks.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Auto-merge Dependabot or automerge-labeled PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          AUTHOR="${{ github.event.pull_request.user.login }}"
+          LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
+          if [[ "$AUTHOR" == *dependabot* ]] || echo "$LABELS" | grep -q automerge; then
+            gh pr merge "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --squash --delete-branch
+          else
+            echo "no auto-merge"
+          fi
