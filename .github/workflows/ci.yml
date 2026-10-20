@@ -124,7 +124,11 @@ jobs:
     steps:
       - name: Auto-merge Dependabot or automerge-labeled PR
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # MAPSNATCH_GITHUB_PAT (falls back to GITHUB_TOKEN): GITHUB_TOKEN-authored
+          # pushes don't trigger downstream `push` workflows (GitHub anti-loop), so a
+          # bare-token merge here would never fire docs.yml's Pages rebuild. Same PAT
+          # as mapsnatch-web; see that repo's ci.yml for the full reasoning.
+          GH_TOKEN: ${{ secrets.MAPSNATCH_GITHUB_PAT || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           AUTHOR="${{ github.event.pull_request.user.login }}"
